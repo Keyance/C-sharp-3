@@ -3,8 +3,8 @@
 ## 💡 Creating ToDoList solution
 
 ```cmd
-cd ToDoList
-dotnet new sln --name ToDoList
+cd ToDoListdotnet new sln --name ToDoList
+
 ```
 
 ## 📡 Creating ToDoList.WebApi project
