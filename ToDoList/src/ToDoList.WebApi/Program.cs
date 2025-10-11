@@ -1,16 +1,13 @@
 var builder = WebApplication.CreateBuilder(args);
 {
-
-    //configure DI
+    //Configure DI
     builder.Services.AddControllers();
 }
 
-
 var app = builder.Build();
 {
-    //Configure Middleware
+    //Configure Middleware (HTTP request pipeline)
     app.MapControllers();
 }
-
 
 app.Run();
