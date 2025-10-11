@@ -25,19 +25,20 @@ public class ToDoItemsController : ControllerBase
     {
         return Ok();
     }
-    [HttpPut("{ToDoItemID:int}")]
-    public IActionResult UpdateByID(int ToDoItemID, [FromBody] ToDoItemRequestDto request)
+   [HttpGet("{toDoItemId:int}")]
+    public IActionResult ReadById(int toDoItemId) //api/ToDoItems/<id> GET
     {
         try
         {
-            throw new Exception("Něco se fakt nepovedlo");
+            throw new Exception("Neco se opravdu nepovedlo.");
         }
         catch (Exception ex)
         {
-            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError);
+            return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
-        return Ok();
+        return Ok(); //200
     }
+
     [HttpDelete("{ToDoItemID:int}")]
     public IActionResult BeleteByID(int ToDoItemID)
     {
