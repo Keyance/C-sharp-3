@@ -30,7 +30,9 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return Created(); //201
+        //201
+        var response = ToDoItemGetResponseDto.FromDomain(item);
+        return CreatedAtAction(nameof(ReadById), new { id = item.ToDoItemId }, response); //vrací metodou ReadById ten záznam, který uživatel vytvořil
     }
 
 
@@ -68,20 +70,20 @@ public class ToDoItemsController : ControllerBase
 
 
     [HttpGet("{ToDoItemID:int}")]
-    public IActionResult ReadByID(int ToDoItemID)
+    public ActionResult<ToDoItemGetResponseDto> ReadById(int toDoItemId)
     {
         try
         {        // Pomocí LINQ hledám - dá se použít i Find se stejnou syntaxí
-            var item = items.FirstOrDefault(i => i.ToDoItemId == ToDoItemID);
+            var item = items.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
 
             if (item == null)
             {
                 // 400
-                return BadRequest($"Item with ID {ToDoItemID} not found.");
+                return BadRequest($"Item with ID {toDoItemId} not found.");
             }
 
             // Pokud existuje - vracím 200 OK a ten jeden item
-            return Ok(item);
+            return Ok(ToDoItemGetResponseDto.FromDomain(item));
         }
         catch (Exception ex)
         {
@@ -134,7 +136,7 @@ public class ToDoItemsController : ControllerBase
 
 
     [HttpDelete("{ToDoItemID:int}")]
-    public IActionResult BeleteByID(int ToDoItemID)
+    public IActionResult DeleteByID(int ToDoItemID)
     {
         try
         {
@@ -162,5 +164,14 @@ public class ToDoItemsController : ControllerBase
     {
         return items.Any(i => i.ToDoItemId == Id);
         //použito jednou
+    }
+
+    public void AddItemtoStorage(ToDoItem item)
+    {
+        items.Add(item);
+    }
+
+    public ToDoItemsController()
+    {
     }
 }
