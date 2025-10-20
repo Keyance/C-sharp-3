@@ -12,7 +12,7 @@ public class CalculatorTests
         var result = calculator.Add(2, 3);
 
         //Assert - chci vyhodnotit že je to správná hodnota
-        Assert.Equal(6, result);
+        Assert.Equal(5, result);
     }
 
     [Fact]

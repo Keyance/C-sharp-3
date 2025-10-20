@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-
-
 namespace ToDoList.Test;
+
+using Microsoft.AspNetCore.Mvc;
 
 public static class ActionResultExtensions
 {
