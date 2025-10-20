@@ -53,7 +53,7 @@ public class ToDoItemsController : ControllerBase
             else
             {
                 //posílám 200
-                return Ok(items);
+                return Ok(items.Select(ToDoItemGetResponseDto.FromDomain));
             }
         }
         catch (Exception ex)
@@ -120,7 +120,7 @@ public class ToDoItemsController : ControllerBase
             existingItem.IsCompleted = request.IsCompleted;
 
 
-            items[index] = existingItem;
+            //items[index] = existingItem; Prý to nic nedělá, takže to bylo zakomentováno
 
 
             return NoContent();
