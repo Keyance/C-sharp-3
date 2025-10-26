@@ -3,12 +3,25 @@ namespace ToDoList.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
+using ToDoList.Persistence;
 
 [Route("api/[controller]")] //localhost:5000/api/ToDoItems
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    public static readonly List<ToDoItem> items = [];
+    public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smazat
+    private readonly ToDoItemsContext context;
+
+    public ToDoItemsController(ToDoItemsContext context)
+    {
+        this.context = context;
+
+        ToDoItem item = new ToDoItem { Name = "první", IsCompleted = true, Description = "some" };
+
+        context.ToDoItems.Add(item);
+        context.SaveChanges();
+
+    }
 
     [HttpPost]
     public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request)
