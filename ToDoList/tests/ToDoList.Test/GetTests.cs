@@ -1,10 +1,8 @@
 namespace ToDoList.Test;
 
-using System.Reflection;
-using ToDoList.Domain.Models;
-using ToDoList.WebApi;
 using Microsoft.AspNetCore.Mvc;
-using ToDoList.Domain.DTOs;
+using ToDoList.Domain.Models;
+using ToDoList.WebApi.Controllers;
 
 public class GetTests
 {
@@ -38,10 +36,9 @@ public class GetTests
         Assert.NotNull(value);
 
         var firstToDo = value.First();
-        Assert.Equal(todoItem1.ToDoItemId, firstToDo.toDoItemId);
-        Assert.Equal(todoItem1.Name, firstToDo.name);
-        Assert.Equal(todoItem1.Description, firstToDo.description);
-        Assert.Equal(todoItem1.IsCompleted, firstToDo.isCompleted);
+        Assert.Equal(todoItem1.ToDoItemId, firstToDo.Id);
+        Assert.Equal(todoItem1.Name, firstToDo.Name);
+        Assert.Equal(todoItem1.Description, firstToDo.Description);
+        Assert.Equal(todoItem1.IsCompleted, firstToDo.IsCompleted);
     }
-
 }
