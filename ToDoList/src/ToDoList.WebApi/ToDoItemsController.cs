@@ -9,7 +9,7 @@ using ToDoList.Persistence;
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smazat
+    //public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smazat
     private readonly ToDoItemsContext context;
 
     public ToDoItemsController(ToDoItemsContext context)
@@ -32,8 +32,10 @@ public class ToDoItemsController : ControllerBase
         //try to create an item
         try
         {
-            item.ToDoItemId = items.Count == 0 ? 1 : items.Max(o => o.ToDoItemId) + 1;
-            items.Add(item);
+            //item.ToDoItemId = items.Count == 0 ? 1 : items.Max(o => o.ToDoItemId) + 1;
+            //items.Add(item);
+            context.ToDoItems.Add(item);
+            context.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -53,7 +55,10 @@ public class ToDoItemsController : ControllerBase
         List<ToDoItem> itemsToGet;
         try
         {
-            itemsToGet = items;
+            //itemsToGet = items;
+            var itemsFromDb = context.ToDoItems
+                .AsNoTracking()
+                .ToList();
         }
         catch (Exception ex)
         {
@@ -96,13 +101,15 @@ public class ToDoItemsController : ControllerBase
         try
         {
             //retrieve the item
-            var itemIndexToUpdate = items.FindIndex(i => i.ToDoItemId == toDoItemId);
-            if (itemIndexToUpdate == -1)
+            var itemIndexToUpdate = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
+            if (itemIndexToUpdate is null)
             {
                 return NotFound(); //404
             }
             updatedItem.ToDoItemId = toDoItemId;
-            items[itemIndexToUpdate] = updatedItem;
+            context.Entry(itemIndexToUpdate).CurrentValues.SetValues(updatedItem);
+            context.SaveChanges();
+
         }
         catch (Exception ex)
         {
@@ -119,12 +126,13 @@ public class ToDoItemsController : ControllerBase
         //try to delete the item
         try
         {
-            var itemToDelete = items.Find(i => i.ToDoItemId == toDoItemId);
+            var itemToDelete = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
             if (itemToDelete is null)
             {
                 return NotFound(); //404
             }
-            items.Remove(itemToDelete);
+            context.ToDoItems.Remove(itemToDelete);
+            context.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -137,6 +145,6 @@ public class ToDoItemsController : ControllerBase
 
     public void AddItemToStorage(ToDoItem item)
     {
-        items.Add(item);
+        context.Add(item);
     }
 }
