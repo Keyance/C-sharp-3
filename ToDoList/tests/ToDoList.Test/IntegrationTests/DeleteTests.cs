@@ -1,14 +1,14 @@
 namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
-using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi.Controllers;
+using ToDoList.WebApi;
+using ToDoList.Persistence;
 
-public class PutTests
+public class DeleteTests
 {
     [Fact]
-    public void Put_ValidId_ReturnsNoContent()
+    public void Delete_ValidId_ReturnsNoContent()
     {
         // Arrange
         var controller = new ToDoItemsController();
@@ -21,21 +21,15 @@ public class PutTests
         };
         controller.items.Add(toDoItem);
 
-        var request = new ToDoItemUpdateRequestDto(
-            Name: "Jine jmeno",
-            Description: "Jiny popis",
-            IsCompleted: true
-        );
-
         // Act
-        var result = controller.UpdateById(toDoItem.ToDoItemId, request);
+        var result = controller.DeleteById(toDoItem.ToDoItemId);
 
         // Assert
         Assert.IsType<NoContentResult>(result);
     }
 
     [Fact]
-    public void Put_InvalidId_ReturnsNotFound()
+    public void Delete_InvalidId_ReturnsNotFound()
     {
         // Arrange
         var controller = new ToDoItemsController();
@@ -48,15 +42,9 @@ public class PutTests
         };
         controller.items.Add(toDoItem);
 
-        var request = new ToDoItemUpdateRequestDto(
-            Name: "Jine jmeno",
-            Description: "Jiny popis",
-            IsCompleted: true
-        );
-
         // Act
         var invalidId = -1;
-        var result = controller.UpdateById(invalidId, request);
+        var result = controller.DeleteById(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
