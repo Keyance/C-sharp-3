@@ -2,7 +2,8 @@ namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi.Controllers;
+using ToDoList.WebApi;
+using ToDoList.Persistence;
 
 public class GetTests
 {
@@ -10,6 +11,10 @@ public class GetTests
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
+        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+        using var context = new ToDoItemsContext(connectionString);
+        var controller = new ToDoItemsController(context: context, repository: null);;
+
         var todoItem1 = new ToDoItem
         {
             ToDoItemId = 1,
@@ -24,9 +29,13 @@ public class GetTests
             Description = "Popis2",
             IsCompleted = true
         };
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(todoItem1);
-        controller.AddItemToStorage(todoItem2);
+        //var controller = new ToDoItemsController(); - již máme nahoře
+        //controller.AddItemToStorage(todoItem1); - stále by fungovalo minimálně zavolání metody, dokud ji nesmažu, až nebude mít reference
+
+        context.ToDoItems.Add(todoItem1); //přidáváme pomocí EF Core metody Add
+        context.ToDoItems.Add(todoItem2);
+        context.SaveChanges();
+
 
         // Act
         var result = controller.Read();
@@ -36,9 +45,14 @@ public class GetTests
         Assert.NotNull(value);
 
         var firstToDo = value.First();
-        Assert.Equal(todoItem1.ToDoItemId, firstToDo.Id);
-        Assert.Equal(todoItem1.Name, firstToDo.Name);
-        Assert.Equal(todoItem1.Description, firstToDo.Description);
-        Assert.Equal(todoItem1.IsCompleted, firstToDo.IsCompleted);
+        Assert.Equal(todoItem1.ToDoItemId, firstToDo.Id); //nevím, proč to vyhazuje chybu "cannot convert from 'int' to 'System.Collections.Generic.IEnumerable<object>?'"
+        Assert.Equal(todoItem1.Name, firstToDo.name);
+        Assert.Equal(todoItem1.Description, firstToDo.description);
+        Assert.Equal(todoItem1.IsCompleted, firstToDo.isCompleted);
+
+        // Cleanup
+        context.ToDoItems.Remove(todoItem1);
+        context.ToDoItems.Remove(todoItem2);
+        context.SaveChanges();
     }
 }
