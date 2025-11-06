@@ -1,26 +1,25 @@
 namespace ToDoList.WebApi;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
 
 [Route("api/[controller]")] //localhost:5000/api/ToDoItems
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    //public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smazat
-    private readonly ToDoItemsContext context;
+    //public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smaza
 
-    public ToDoItemsController(ToDoItemsContext context)
+
+    private readonly ToDoItemsContext context;
+    private readonly IRepository<ToDoItem> repository;
+    public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
     {
         this.context = context;
-
-        ToDoItem item = new ToDoItem { Name = "první", IsCompleted = true, Description = "some" };
-
-        context.ToDoItems.Add(item);
-        context.SaveChanges();
-
+        this.repository = repository;
     }
 
     [HttpPost]
@@ -57,8 +56,9 @@ public class ToDoItemsController : ControllerBase
         {
             //itemsToGet = items;
             var itemsFromDb = context.ToDoItems
-                .AsNoTracking()
+                .AsNoTracking() //definuje, že nebudeme zasahovat do databáze, readonly
                 .ToList();
+            itemsToGet = itemsFromDb;
         }
         catch (Exception ex)
         {
@@ -78,7 +78,11 @@ public class ToDoItemsController : ControllerBase
         ToDoItem? itemToGet;
         try
         {
-            itemToGet = items.Find(i => i.ToDoItemId == toDoItemId);
+            var itemFromDb = context.ToDoItems
+                .AsNoTracking() //definuje, že nebudeme zasahovat do databáze, readonly
+                .FirstOrDefault(i => i.ToDoItemId == toDoItemId);
+            //itemToGet = items.Find(i => i.ToDoItemId == toDoItemId);
+            itemToGet = itemFromDb;
         }
         catch (Exception ex)
         {
