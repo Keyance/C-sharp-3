@@ -36,7 +36,7 @@ public class PostTests
         Assert.Equal(request.Name, value.name);
 
         // Cleanup
-        var createdItem = context.ToDoItems.Find(value.Id); //musíme najít jaké ID mu databáze přiřadila
+        var createdItem = context.ToDoItems.Find(value.toDoItemId); //musíme najít jaké ID mu databáze přiřadila
         if (createdItem != null) //jenom pokud něco bylo vytvořeno
         {
             context.ToDoItems.Remove(createdItem);

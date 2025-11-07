@@ -45,7 +45,7 @@ public class GetTests
         Assert.NotNull(value);
 
         var firstToDo = value.First();
-        Assert.Equal(todoItem1.ToDoItemId, firstToDo.Id); //nevím, proč to vyhazuje chybu "cannot convert from 'int' to 'System.Collections.Generic.IEnumerable<object>?'"
+        Assert.Equal(todoItem1.ToDoItemId, firstToDo.toDoItemId);
         Assert.Equal(todoItem1.Name, firstToDo.name);
         Assert.Equal(todoItem1.Description, firstToDo.description);
         Assert.Equal(todoItem1.IsCompleted, firstToDo.isCompleted);
