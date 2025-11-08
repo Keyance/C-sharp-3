@@ -3,7 +3,8 @@ namespace ToDoList.Test;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi.Controllers;
+using ToDoList.WebApi;
+using ToDoList.Persistence;
 
 public class PutTests
 {
@@ -11,7 +12,10 @@ public class PutTests
     public void Put_ValidId_ReturnsNoContent()
     {
         // Arrange
-        var controller = new ToDoItemsController();
+        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+        using var context = new ToDoItemsContext(connectionString);
+        var controller = new ToDoItemsController(context: context, repository: null);
+
         var toDoItem = new ToDoItem
         {
             ToDoItemId = 1,
@@ -19,7 +23,9 @@ public class PutTests
             Description = "Popis",
             IsCompleted = false
         };
-        controller.items.Add(toDoItem);
+
+        context.ToDoItems.Add(toDoItem);
+        context.SaveChanges();
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
@@ -28,17 +34,24 @@ public class PutTests
         );
 
         // Act
-        var result = controller.UpdateById(toDoItem.ToDoItemId, request);
+        var result = controller.UpdateById(toDoItem.ToDoItemId, request); //stejné, změna je již v Controlleru
 
         // Assert
         Assert.IsType<NoContentResult>(result);
+
+        // Cleanup
+        context.ToDoItems.Remove(toDoItem);
+        context.SaveChanges();
     }
 
     [Fact]
     public void Put_InvalidId_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
+        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+        using var context = new ToDoItemsContext(connectionString);
+        var controller = new ToDoItemsController(context: context, repository: null);
+
         var toDoItem = new ToDoItem
         {
             ToDoItemId = 1,
@@ -46,7 +59,8 @@ public class PutTests
             Description = "Popis",
             IsCompleted = false
         };
-        controller.items.Add(toDoItem);
+        context.ToDoItems.Add(toDoItem);
+        context.SaveChanges();
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
@@ -60,5 +74,9 @@ public class PutTests
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
+
+        // Cleanup
+        context.ToDoItems.Remove(toDoItem); //možná se to dá zabalit do if not null
+        context.SaveChanges();
     }
 }
