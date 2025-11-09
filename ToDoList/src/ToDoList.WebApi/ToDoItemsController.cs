@@ -13,7 +13,6 @@ public class ToDoItemsController : ControllerBase
 {
     //public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smaza
 
-
     private readonly ToDoItemsContext context;
     private readonly IRepository<ToDoItem> repository;
     public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
@@ -28,14 +27,12 @@ public class ToDoItemsController : ControllerBase
         //map to Domain object as soon as possible
         var item = request.ToDomain();
 
-        //try to create an item
+        //try to create an item - nově zavoláním IRepository
         try
         {
-            //item.ToDoItemId = items.Count == 0 ? 1 : items.Max(o => o.ToDoItemId) + 1;
-            //items.Add(item);
-            context.ToDoItems.Add(item);
-            context.SaveChanges();
+            repository.Create(item);
         }
+
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
@@ -54,11 +51,7 @@ public class ToDoItemsController : ControllerBase
         List<ToDoItem> itemsToGet;
         try
         {
-            //itemsToGet = items;
-            var itemsFromDb = context.ToDoItems
-                .AsNoTracking() //definuje, že nebudeme zasahovat do databáze, readonly
-                .ToList();
-            itemsToGet = itemsFromDb;
+            itemsToGet = (List<ToDoItem>)repository.GetAll();
         }
         catch (Exception ex)
         {
@@ -78,11 +71,7 @@ public class ToDoItemsController : ControllerBase
         ToDoItem? itemToGet;
         try
         {
-            var itemFromDb = context.ToDoItems
-                .AsNoTracking() //definuje, že nebudeme zasahovat do databáze, readonly
-                .FirstOrDefault(i => i.ToDoItemId == toDoItemId);
-            //itemToGet = items.Find(i => i.ToDoItemId == toDoItemId);
-            itemToGet = itemFromDb;
+            itemToGet = repository.GetById(toDoItemId);
         }
         catch (Exception ex)
         {
@@ -104,15 +93,11 @@ public class ToDoItemsController : ControllerBase
         //try to update the item by retrieving it with given id
         try
         {
-            //retrieve the item
-            var itemIndexToUpdate = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
-            if (itemIndexToUpdate is null)
+            var updated = repository.Update(toDoItemId, updatedItem);
+            if (!updated)
             {
-                return NotFound(); //404
+                return NotFound();
             }
-            updatedItem.ToDoItemId = toDoItemId;
-            context.Entry(itemIndexToUpdate).CurrentValues.SetValues(updatedItem);
-            context.SaveChanges();
 
         }
         catch (Exception ex)
@@ -130,13 +115,11 @@ public class ToDoItemsController : ControllerBase
         //try to delete the item
         try
         {
-            var itemToDelete = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == toDoItemId);
-            if (itemToDelete is null)
+            var deleted = repository.Delete(toDoItemId);
+            if (!deleted)
             {
-                return NotFound(); //404
+                return NotFound();
             }
-            context.ToDoItems.Remove(itemToDelete);
-            context.SaveChanges();
         }
         catch (Exception ex)
         {
