@@ -13,7 +13,7 @@ public class DeleteTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db"; //vytváříme si jinou db jenom pro testy
         using var context = new ToDoItemsContext(connectionString); //funguje v rámci závorek odsud po konec metody
-        var controller = new ToDoItemsController(context: context, repository: null);
+        var controller = new ToDoItemsController(repository: null);
 
         var toDoItem = new ToDoItem
         {
@@ -42,7 +42,7 @@ public class DeleteTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
-        var controller = new ToDoItemsController(context: context, repository: null);
+        var controller = new ToDoItemsController(repository: null);
 
         // Act
         var invalidId = -1;

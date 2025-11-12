@@ -12,7 +12,7 @@ public class DeleteTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(null, repository: null);
+        var controller = new ToDoItemsController(repository: null);
 
         var toDoItem = new ToDoItem
         {
@@ -34,12 +34,48 @@ public class DeleteTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(null, repository: null);
+        var controller = new ToDoItemsController(repository: null);
         // Act
         var invalidId = -1;
         var result = controller.DeleteById(invalidId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result); //kontroluje že výsledek metody DeleteById je not found (404)
+    }
+
+    //BRAK-OUT ROOM testy
+    [Fact]
+    public void Delete_ValidItemId_ReturnsNoContent()
+    {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var controller = new ToDoItemsController(repository: null);
+        repositoryMock.GetById(Arg.Any<int>()).Returns(
+new ToDoItem { Name = "test", Description = "test", IsCompleted = false }
+        );
+        var id = 1;
+
+        //Act
+        var result = controller.DeleteById(id);
+
+        //Assert
+        Assert.IsType<NoContentResult>(result);
+        repositoryMock.Received(1).GetById(id);
+        repositoryMock.Received(1).Delete(id);
+    }
+    [Fact]
+    public void Delete_InvalidItemId_ReturnsNotFound()
+    {
+
+    }
+    [Fact]
+    public void Delete_AnyItemIdExceptionOccurredDuringReadById_ReturnsInternalServerError()
+    {
+
+    }
+    [Fact]
+    public void Delete_AnyItemIdExceptionOccurredDuringDeleteById_ReturnsInternalServerError()
+    {
+
     }
 }

@@ -13,11 +13,10 @@ public class ToDoItemsController : ControllerBase
 {
     //public static readonly List<ToDoItem> items = []; //po dopsání úkolu již není potřeba a bude možno smaza
 
-    private readonly ToDoItemsContext context;
+    //private readonly ToDoItemsContext context;
     private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
+    public ToDoItemsController(IRepository<ToDoItem> repository)
     {
-        this.context = context;
         this.repository = repository;
     }
 
@@ -130,8 +129,6 @@ public class ToDoItemsController : ControllerBase
         return NoContent(); //204
     }
 
-    public void AddItemToStorage(ToDoItem item)
-    {
-        context.Add(item);
-    }
+    //public void AddItemToStorage(ToDoItem item)
+    //{ context.Add(item);    }
 }
