@@ -13,7 +13,7 @@ public class GetByIdTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString); //proč se používá using v rámci definování nové proměnné???
-        var controller = new ToDoItemsController(context: context, repository: null); //tady se používá nějaká repository magic
+        var controller = new ToDoItemsController(repository: null); //tady se používá nějaká repository magic
 
         var toDoItem = new ToDoItem
         {
@@ -46,7 +46,7 @@ public class GetByIdTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
-        var controller = new ToDoItemsController(context: context, repository: null);
+        var controller = new ToDoItemsController(repository: null);
 
         //var toDoItem = new ToDoItem{ToDoItemId = 1,Name = "Jmeno",Description = "Popis",IsCompleted = false};
         //controller.items.Add(toDoItem);

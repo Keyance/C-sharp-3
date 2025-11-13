@@ -1,9 +1,10 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi.Controllers;
 
 public class DeleteTests
 {
@@ -11,9 +12,10 @@ public class DeleteTests
     public void Delete_ValidId_ReturnsNoContent()
     {
         // Arrange
-        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db"; //vytváříme si jinou db jenom pro testy
-        using var context = new ToDoItemsContext(connectionString); //funguje v rámci závorek odsud po konec metody
-        var controller = new ToDoItemsController(repository: null);
+        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+        using var context = new ToDoItemsContext(connectionString);
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
 
         var toDoItem = new ToDoItem
         {
@@ -27,13 +29,12 @@ public class DeleteTests
         // Act
         var result = controller.DeleteById(toDoItem.ToDoItemId);
 
-
-        //Assert
-        Assert.IsType<NoContentResult>(result); //zjišťuje, zda v var result už není žádný obsah
+        // Assert
+        Assert.IsType<NoContentResult>(result);
 
         // Verify item was deleted
-        var deletedItem = context.ToDoItems.Find(toDoItem.ToDoItemId); //snažím se do proměné vložit item, který jsem mazala
-        Assert.Null(deletedItem); //ověřuji, že se mi v předchozím řádku žádný item nenahrál
+        var deletedItem = context.ToDoItems.Find(toDoItem.ToDoItemId);
+        Assert.Null(deletedItem);
     }
 
     [Fact]
@@ -42,13 +43,15 @@ public class DeleteTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
-        var controller = new ToDoItemsController(repository: null);
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
 
         // Act
         var invalidId = -1;
         var result = controller.DeleteById(invalidId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result); //kontroluje že výsledek metody DeleteById je not found (404)
+        Assert.IsType<NotFoundResult>(result);
     }
 }
+

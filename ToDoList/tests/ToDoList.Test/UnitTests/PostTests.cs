@@ -1,9 +1,13 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.UnitTests;
 
+using NSubstitute;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.WebApi;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
+using ToDoList.Domain.Models;
+using ToDoList.Test;
 
 public class PostTests
 {
@@ -11,10 +15,9 @@ public class PostTests
     public void Post_ValidRequest_ReturnsNewItem()
     {
         // Arrange
-        //var controller = new ToDoItemsController();
-        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
-        using var context = new ToDoItemsContext(connectionString);
-        var controller = new ToDoItemsController(repository: null);
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+
+        var controller = new ToDoItemsController(repository: null); //toto je zatím prasárna, protože na context už pak nesaháme
 
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
@@ -34,13 +37,5 @@ public class PostTests
         Assert.Equal(request.Description, value.description);
         Assert.Equal(request.IsCompleted, value.isCompleted);
         Assert.Equal(request.Name, value.name);
-
-        // Cleanup
-        var createdItem = context.ToDoItems.Find(value.toDoItemId); //musíme najít jaké ID mu databáze přiřadila
-        if (createdItem != null) //jenom pokud něco bylo vytvořeno
-        {
-            context.ToDoItems.Remove(createdItem);
-            context.SaveChanges();
-        }
     }
 }
