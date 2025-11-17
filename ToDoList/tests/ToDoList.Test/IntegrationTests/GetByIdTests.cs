@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
 using ToDoList.WebApi;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
 
 public class GetByIdTests
 {
@@ -13,7 +14,8 @@ public class GetByIdTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString); //proč se používá using v rámci definování nové proměnné???
-        var controller = new ToDoItemsController(repository: null); //tady se používá nějaká repository magic
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
 
         var toDoItem = new ToDoItem
         {
@@ -46,7 +48,8 @@ public class GetByIdTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
-        var controller = new ToDoItemsController(repository: null);
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
 
         //var toDoItem = new ToDoItem{ToDoItemId = 1,Name = "Jmeno",Description = "Popis",IsCompleted = false};
         //controller.items.Add(toDoItem);

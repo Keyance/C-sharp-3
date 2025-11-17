@@ -12,7 +12,7 @@ public class DeleteTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(repository: null);
+        var controller = new ToDoItemsController(repositoryMock);
 
         var toDoItem = new ToDoItem
         {
@@ -34,7 +34,7 @@ public class DeleteTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(repository: null);
+        var controller = new ToDoItemsController(repositoryMock);
         // Act
         var invalidId = -1;
         var result = controller.DeleteById(invalidId);
@@ -49,7 +49,7 @@ public class DeleteTests
     {
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(repository: null);
+        var controller = new ToDoItemsController(repositoryMock);
         repositoryMock.GetById(Arg.Any<int>()).Returns(
 new ToDoItem { Name = "test", Description = "test", IsCompleted = false }
         );

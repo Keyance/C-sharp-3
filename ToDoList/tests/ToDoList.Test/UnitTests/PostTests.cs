@@ -17,7 +17,7 @@ public class PostTests
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
 
-        var controller = new ToDoItemsController(repository: null); //toto je zatím prasárna, protože na context už pak nesaháme
+        var controller = new ToDoItemsController(repositoryMock); //toto je zatím prasárna, protože na context už pak nesaháme
 
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
