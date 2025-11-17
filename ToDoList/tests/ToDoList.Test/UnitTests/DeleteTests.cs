@@ -63,19 +63,40 @@ new ToDoItem { Name = "test", Description = "test", IsCompleted = false }
         repositoryMock.Received(1).GetById(id);
         repositoryMock.Received(1).Delete(id);
     }
-    [Fact]
-    public void Delete_InvalidItemId_ReturnsNotFound()
-    {
 
-    }
     [Fact]
     public void Delete_AnyItemIdExceptionOccurredDuringReadById_ReturnsInternalServerError()
     {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        repositoryMock.GetById(1).Throws(new Exception("au"));
+        var controller = new ToDoItemsController(repositoryMock);
 
+        // Act
+        var result = controller.DeleteById(1);
+
+        // Assert
+        var error = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, error.StatusCode);
+        repositoryMock.Received(1).GetById(1);
     }
     [Fact]
     public void Delete_AnyItemIdExceptionOccurredDuringDeleteById_ReturnsInternalServerError()
     {
+        // Arrange
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        repositoryMock.GetById(1).Returns(new ToDoItem());
+        repositoryMock.Delete(1).Throws(new Exception());
+        var controller = new ToDoItemsController(repositoryMock);
+
+        // Act
+        var result = controller.DeleteById(1);
+
+        // Assert
+        var error = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, error.StatusCode);
+        repositoryMock.Received(1).GetById(1);
+        repositoryMock.Received(1).Delete(1);
 
     }
 }
