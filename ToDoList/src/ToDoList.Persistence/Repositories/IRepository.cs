@@ -13,8 +13,8 @@ public interface IRepository<T>
     T? GetById(int id); //otazník znamená, že proměná může být i null
 
     // UPDATE
-    bool Update(int id, T request);
+    void Update(int id, T request);
 
     // DELETE
-    bool Delete(int id);
+    void Delete(int id);
 }

@@ -1,10 +1,10 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
-using ToDoList.WebApi;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi.Controllers;
 
 public class PostTests
 {
@@ -12,12 +12,10 @@ public class PostTests
     public void Post_ValidRequest_ReturnsNewItem()
     {
         // Arrange
-        //var controller = new ToDoItemsController();
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
         var repository = new ToDoItemsRepository(context);
         var controller = new ToDoItemsController(repository);
-
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
             Description: "Popis",
@@ -25,7 +23,7 @@ public class PostTests
         );
 
         // Act
-        var result = controller.Create(request); //zase zůstává stejné
+        var result = controller.Create(request);
         var resultResult = result.Result;
         var value = result.GetValue();
 
@@ -33,16 +31,17 @@ public class PostTests
         Assert.IsType<CreatedAtActionResult>(resultResult);
         Assert.NotNull(value);
 
-        Assert.Equal(request.Description, value.description);
-        Assert.Equal(request.IsCompleted, value.isCompleted);
-        Assert.Equal(request.Name, value.name);
+        Assert.Equal(request.Description, value.Description);
+        Assert.Equal(request.IsCompleted, value.IsCompleted);
+        Assert.Equal(request.Name, value.Name);
 
         // Cleanup
-        var createdItem = context.ToDoItems.Find(value.toDoItemId); //musíme najít jaké ID mu databáze přiřadila
-        if (createdItem != null) //jenom pokud něco bylo vytvořeno
+        var createdItem = context.ToDoItems.Find(value.Id);
+        if (createdItem != null)
         {
             context.ToDoItems.Remove(createdItem);
             context.SaveChanges();
         }
     }
 }
+

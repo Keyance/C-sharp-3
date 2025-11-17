@@ -35,12 +35,12 @@ namespace ToDoList.Persistence.Repositories
             return itemFromDb; //místo předchozího vkládání teď musíme mít return
         }
 
-        public bool Update(int id, ToDoItem item)
+        public void Update(int id, ToDoItem item)
         {
             var itemIndexToUpdate = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == id);
             if (itemIndexToUpdate is null)
             {
-                return false;
+                throw new ArgumentOutOfRangeException($"ToDo item with ID {id} not found.");
             }
 
             // zajistí konzistenci klíče
@@ -49,19 +49,17 @@ namespace ToDoList.Persistence.Repositories
             // zkopíruje hodnoty z updated do tracked entity
             context.Entry(itemIndexToUpdate).CurrentValues.SetValues(item);
             context.SaveChanges();
-            return true;
         }
 
-        public bool Delete(int id)
+        public void Delete(int id)
         {
             var itemToDelete = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == id);
             if (itemToDelete is null)
             {
-                return false;
+                throw new ArgumentOutOfRangeException($"ToDo item with ID {id} not found.");
             }
             context.ToDoItems.Remove(itemToDelete);
             context.SaveChanges();
-            return true;
         }
 
     }

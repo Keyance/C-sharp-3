@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
 using ToDoList.WebApi;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
 
 public class GetTests
 {
@@ -13,7 +14,8 @@ public class GetTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
-        var controller = new ToDoItemsController(context: context, repository: null);;
+        var repository = new ToDoItemsRepository(context);
+        var controller = new ToDoItemsController(repository);
 
         var todoItem1 = new ToDoItem
         {
