@@ -52,8 +52,8 @@ public class PostTests
             Description: "Popis",
             IsCompleted: false
         );
-        repositoryMock.Create(Arg.Any<ToDoItem>()).Throws(new Exception("boom"));
-
+        repositoryMock.When(x => x.Create(Arg.Any<ToDoItem>()))
+                      .Do(_ => throw new Exception());
         // Act
         var result = controller.Create(request);
         var resultResult = result.Result;

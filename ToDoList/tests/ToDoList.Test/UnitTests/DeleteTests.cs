@@ -1,6 +1,7 @@
 namespace ToDoList.Test.UnitTests;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
 using ToDoList.WebApi;
@@ -86,7 +87,9 @@ new ToDoItem { Name = "test", Description = "test", IsCompleted = false }
         // Arrange
         var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
         repositoryMock.GetById(1).Returns(new ToDoItem());
-        repositoryMock.Delete(1).Throws(new Exception());
+        repositoryMock
+                .When(x => x.Delete(Arg.Any<int>()))
+                .Do(_ => throw new Exception());
         var controller = new ToDoItemsController(repositoryMock);
 
         // Act

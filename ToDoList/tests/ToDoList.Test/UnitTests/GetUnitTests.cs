@@ -57,8 +57,8 @@ namespace ToDoList.Test.UnitTests
             // Arrange
             var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
             var controller = new ToDoItemsController(repositoryMock);
-            repositoryMock.GetAll().Throws(new Exception());
-
+            repositoryMock.When(x => x.Create(Arg.Any<ToDoItem>()))
+                          .Do(_ => throw new Exception());
             // Act
             var result = controller.Read().Result;
 
