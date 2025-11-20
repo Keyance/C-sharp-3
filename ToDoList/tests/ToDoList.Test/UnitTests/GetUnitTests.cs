@@ -32,5 +32,41 @@ namespace ToDoList.Test.UnitTests
             Assert.IsType<IEnumerable<ToDoItemGetResponseDto>>(result);
             repositoryMock.Received(1).GetAll();
         }
+
+        [Fact]
+        public void Get_ReadWhenNoItemAvailable_ReturnsNotFound()
+        {
+            //Arrange
+            var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+            var controller = new ToDoItemsController(repositoryMock);
+            repositoryMock.GetAll().Returns(new List<ToDoItem>()); //prázdná kolekce
+
+            //Act
+            var actionResult = controller.Read();
+            var result = actionResult.Result;
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+            repositoryMock.Received(1).GetAll();
+
+        }
+
+        [Fact]
+        public void Get_ReadUnhandledException_ReturnsInternalServerError()
+        {
+            // Arrange
+            var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+            var controller = new ToDoItemsController(repositoryMock);
+            repositoryMock.When(x => x.Create(Arg.Any<ToDoItem>()))
+                          .Do(_ => throw new Exception());
+            // Act
+            var result = controller.Read().Result;
+
+            // Assert
+            var error = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, error.StatusCode);
+
+            repositoryMock.Received(1).GetAll();
+        }
     }
 }
