@@ -38,7 +38,7 @@ public class PutTests
         Assert.IsType<NoContentResult>(result);
 
         repositoryMock.Received(1).GetById(1);
-        repositoryMock.Received(1).Update(Arg.Is<ToDoItem>(x =>
+        repositoryMock.Received(1).Update(Arg.Any<int>(),Arg.Is<ToDoItem>(x =>
             x.ToDoItemId == 1 &&
             x.Name == "Jine jmeno" &&
             x.Description == "Jiny popis" &&
@@ -67,7 +67,7 @@ public class PutTests
         Assert.IsType<NotFoundResult>(result);
 
         repositoryMock.Received(1).GetById(1);
-        repositoryMock.DidNotReceive().Update(Arg.Any<ToDoItem>());
+        repositoryMock.DidNotReceive().Update(Arg.Any<int>(),Arg.Any<ToDoItem>());
     }
 
     [Fact]
@@ -93,6 +93,6 @@ public class PutTests
         Assert.Equal(500, resultResult?.StatusCode);
 
         repositoryMock.Received(1).GetById(1);
-        repositoryMock.DidNotReceive().Update(Arg.Any<ToDoItem>());
+        repositoryMock.DidNotReceive().Update(Arg.Any<int>(),Arg.Any<ToDoItem>());
     }
 }
