@@ -1,5 +1,7 @@
 @using ToDoList.Frontend.Models
 
+    <button @onclick="OrderById">Order by ID</button>
+    <button @onclick="OrderByName">Order by Name</button>
 
 <div>
     <h2>ToDo items dashboard</h2>
@@ -41,5 +43,19 @@ new ToDoItemView(5, "Přečíst knihu", "Kapitola 5", true)
     protected override void OnInitialized()
     {
         sortedData = testData.ToList();
+    }
+
+         private void OrderById()
+    {
+        sortedData = sortedData
+            .OrderBy(x => x.Id)
+            .ToList();
+    }
+
+    private void OrderByName()
+    {
+        sortedData = sortedData
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 }
