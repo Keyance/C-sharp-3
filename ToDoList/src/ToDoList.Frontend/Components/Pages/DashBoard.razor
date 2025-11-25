@@ -1,7 +1,7 @@
 @using ToDoList.Frontend.Models
 
-    <button @onclick="OrderById">Order by ID</button>
-    <button @onclick="OrderByName">Order by Name</button>
+<button @onclick="OrderById">Order by ID</button>
+<button @onclick="OrderByName">Order by Name</button>
 
 <div>
     <h2>ToDo items dashboard</h2>
@@ -15,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in testData)
+            @foreach (var item in sortedData)
             {
                 <tr>
                     <td>@item.Id</td>
@@ -45,17 +45,17 @@ new ToDoItemView(5, "Přečíst knihu", "Kapitola 5", true)
         sortedData = testData.ToList();
     }
 
-         private void OrderById()
+    private void OrderById()
     {
         sortedData = sortedData
-            .OrderBy(x => x.Id)
-            .ToList();
+        .OrderBy(x => x.Id)
+        .ToList();
     }
 
     private void OrderByName()
     {
         sortedData = sortedData
-            .OrderBy(x => x.Name)
-            .ToList();
+        .OrderBy(x => x.Name)
+        .ToList();
     }
 }
