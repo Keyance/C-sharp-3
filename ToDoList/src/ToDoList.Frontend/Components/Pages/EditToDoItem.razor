@@ -1,0 +1,12 @@
+@page "/editToDoItem/{ItemId:int}"
+
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+@code{
+
+    [Parameter]
+    public int ItemId {get; set;}
+
+}

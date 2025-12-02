@@ -24,4 +24,4 @@ app.Run();
 //git remote add template https://github.com/czechitas/csharp3-template
 //git pull template main --allow-unrelated-histories
 //git config pull.rebase false
-
+//git pull template main --allow-unrelated-histories
