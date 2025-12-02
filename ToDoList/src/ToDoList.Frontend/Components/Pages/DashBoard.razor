@@ -1,4 +1,7 @@
 @using ToDoList.Frontend.Models
+@using ToDoList.Frontend.Clients
+
+@inject IToDoItemsClient toDoItemsClient
 
 <button @onclick="OrderById">Order by ID</button>
 <button @onclick="OrderByName">Order by Name</button>
@@ -57,5 +60,11 @@ new ToDoItemView(5, "Přečíst knihu", "Kapitola 5", true)
         sortedData = sortedData
         .OrderBy(x => x.Name)
         .ToList();
+    }
+
+        protected override async Task OnInitializedAsync()
+    {
+        //sortedData = testData.ToList();
+        sortedData = await toDoItemsClient.ReadItemsAsync();
     }
 }
