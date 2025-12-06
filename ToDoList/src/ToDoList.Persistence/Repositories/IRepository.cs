@@ -4,7 +4,7 @@ public interface IRepository<T>
     where T : class
 {
     //CREATE AN ITEM
-    public void Create(T item);
+    public void Create (T item);
 
     //READ ALL
     public IEnumerable<T> GetAll();
@@ -17,4 +17,12 @@ public interface IRepository<T>
 
     // DELETE
     void Delete(int id);
+}
+public interface IRepositoryAsync<T> where T : class
+{
+    public Task CreateAsync(T item);
+    public Task<IEnumerable<T>> ReadAllAsync();
+    public Task<T?> ReadByIdAsync(int id);
+    public Task UpdateAsync(T item);
+    public Task DeleteByIdAsync(int id);
 }

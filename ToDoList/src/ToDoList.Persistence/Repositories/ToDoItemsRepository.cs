@@ -7,60 +7,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Persistence.Repositories
 {
-    public class ToDoItemsRepository : IRepository<ToDoItem>
+    public class ToDoItemsRepository : IRepositoryAsync<ToDoItem>
     {
         private readonly ToDoItemsContext context;
         public ToDoItemsRepository(ToDoItemsContext context)
         {
             this.context = context;
         }
-        public void Create(ToDoItem item)
+        public async Task CreateAsync(ToDoItem item)
+
         {
-            context.ToDoItems.Add(item);
-            context.SaveChanges();
+            await context.ToDoItems.AddAsync(item);
+            await context.SaveChangesAsync();
         }
-
-        public IEnumerable<ToDoItem> GetAll()
-        {
-            return context.ToDoItems
-                .AsNoTracking() // jen pro čtení
-                .ToList();
-        }
-
-        public ToDoItem? GetById(int id)
-        {
-            var itemFromDb = context.ToDoItems
-                .AsNoTracking() //definuje, že nebudeme zasahovat do databáze, readonly
-                .FirstOrDefault(i => i.ToDoItemId == id);
-            return itemFromDb; //místo předchozího vkládání teď musíme mít return
-        }
-
-        public void Update(int id, ToDoItem item)
-        {
-            var itemIndexToUpdate = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == id);
-            if (itemIndexToUpdate is null)
-            {
-                throw new ArgumentOutOfRangeException($"ToDo item with ID {id} not found.");
-            }
-
-            // zajistí konzistenci klíče
-            item.ToDoItemId = id;
-
-            // zkopíruje hodnoty z updated do tracked entity
-            context.Entry(itemIndexToUpdate).CurrentValues.SetValues(item);
-            context.SaveChanges();
-        }
-
-        public void Delete(int id)
-        {
-            var itemToDelete = context.ToDoItems.FirstOrDefault(i => i.ToDoItemId == id);
-            if (itemToDelete is null)
-            {
-                throw new ArgumentOutOfRangeException($"ToDo item with ID {id} not found.");
-            }
-            context.ToDoItems.Remove(itemToDelete);
-            context.SaveChanges();
-        }
-
+public async Task<IEnumerable<ToDoItem>> ReadAllAsync() => await context.ToDoItems.ToListAsync();
+    public async Task<ToDoItem?> ReadByIdAsync(int id) => await context.ToDoItems.FindAsync(id);
+    public async Task UpdateAsync(ToDoItem item)
+    {
+        var foundItem = await context.ToDoItems.FindAsync(item.ToDoItemId) ?? throw new ArgumentOutOfRangeException($"ToDo item with ID {item.ToDoItemId} not found.");
+        context.Entry(foundItem).CurrentValues.SetValues(item);
+        await context.SaveChangesAsync();
     }
+
+    public async Task DeleteByIdAsync(int id)
+    {
+        var item = await context.ToDoItems.FindAsync(id) ?? throw new ArgumentOutOfRangeException($"ToDo item with ID {id} not found.");
+        context.ToDoItems.Remove(item);
+        await context.SaveChangesAsync();
+    }
+}
 }

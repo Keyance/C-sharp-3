@@ -25,7 +25,7 @@ public class GetByIdTests
         repositoryMock.GetById(1).Returns(toDoItem);
 
         // Act
-        var result = controller.ReadById(1);
+        var result = controller.ReadByIdAsync(1);
         var resultResult = result.Result;
         var value = result.GetValue();
 
@@ -50,7 +50,7 @@ public class GetByIdTests
         repositoryMock.GetById(Arg.Any<int>()).Returns((ToDoItem?)null);
 
         // Act
-        var result = controller.ReadById(1);
+        var result = controller.ReadByIdAsync(1);
         var resultResult = result.Result;
 
         // Assert
@@ -68,7 +68,7 @@ public class GetByIdTests
         var controller = new ToDoItemsController(repositoryMock);
 
         // Act
-        var result = controller.ReadById(1);
+        var result = controller.ReadByIdAsync(1);
         var resultResult = result.Result;
 
         // Assert

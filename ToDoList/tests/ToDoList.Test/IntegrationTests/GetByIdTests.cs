@@ -28,7 +28,7 @@ public class GetByIdTests
         context.SaveChanges();
 
         // Act
-        var result = controller.ReadById(toDoItem.ToDoItemId); //zde to zůstává stejné, protože změna na práci s DB proběhla již v rámci metody v controlleru
+        var result = controller.ReadByIdAsync(toDoItem.ToDoItemId); //zde to zůstává stejné, protože změna na práci s DB proběhla již v rámci metody v controlleru
         var resultResult = result.Result;
         var value = result.GetValue();
 
@@ -57,7 +57,7 @@ public class GetByIdTests
 
         // Act
         var invalidId = -1;
-        var result = controller.ReadById(invalidId);
+        var result = controller.ReadByIdAsync(invalidId);
         var resultResult = result.Result;
 
         // Assert
