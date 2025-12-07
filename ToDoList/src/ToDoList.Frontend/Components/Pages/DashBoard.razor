@@ -28,6 +28,8 @@
                     <td>@item.Description</td>
                     <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
                     <td><button class="btn btn-success" @onclick="() => EditItem(item)">Edit</button></td>
+                    <td><button class="btn btn-success" @onclick="() => DeleteItem(item)">Delete</button></td>
+
                 </tr>
             }
         </tbody>
@@ -51,6 +53,10 @@
     public void EditItem(ToDoItemView toDoItem)
     {
         NavigationManager.NavigateTo($"editToDoItem/{toDoItem.Id}");
+    }
+    public void DeleteItem(ToDoItemView toDoItem)
+    {
+        NavigationManager.NavigateTo($"deleteToDoItem/{toDoItem.Id}");
     }
 
     protected override async Task OnInitializedAsync()
