@@ -23,18 +23,21 @@
     </EditForm>
 }
 
-@code{
+@code {
 
-    public ToDoItemView ToDoItemModel {get; set;}
+    public ToDoItemView ToDoItemModel { get; set; }
     protected override async Task OnInitializedAsync()
     {
         ToDoItemModel = await toDoItemsClient.ReadItemByIdAsync(ItemId);
     }
     [Parameter]
-    public int ItemId {get; set;}
+    public int ItemId { get; set; }
 
-    public async Task Submit ()
-    {}
+    public async Task Submit()
+    {
+        await toDoItemsClient.UpdateItemAsync(ToDoItemModel);
+        NavigationManager.NavigateTo("/");
+    }
 
 
 }
