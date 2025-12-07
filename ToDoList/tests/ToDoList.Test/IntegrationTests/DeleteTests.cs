@@ -1,19 +1,20 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi;
 
 public class DeleteTests
 {
     [Fact]
-    public void Delete_ValidId_ReturnsNoContent()
+    public async Task Delete_ValidId_ReturnsNoContent()
     {
         // Arrange
-        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db"; //vytváříme si jinou db jenom pro testy
-        using var context = new ToDoItemsContext(connectionString); //funguje v rámci závorek odsud po konec metody
+        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+        using var context = new ToDoItemsContext(connectionString);
         var repository = new ToDoItemsRepository(context);
         var controller = new ToDoItemsController(repository);
 
@@ -23,23 +24,22 @@ public class DeleteTests
             Description = "Popis",
             IsCompleted = false
         };
-        context.ToDoItems.Add(toDoItem);
-        context.SaveChanges();
+        await context.ToDoItems.AddAsync(toDoItem);
+        await context.SaveChangesAsync();
 
         // Act
-        var result = controller.DeleteById(toDoItem.ToDoItemId);
+        var result = await controller.DeleteById(toDoItem.ToDoItemId);
 
-
-        //Assert
-        Assert.IsType<NoContentResult>(result); //zjišťuje, zda v var result už není žádný obsah
+        // Assert
+        Assert.IsType<NoContentResult>(result);
 
         // Verify item was deleted
-        var deletedItem = context.ToDoItems.Find(toDoItem.ToDoItemId); //snažím se do proměné vložit item, který jsem mazala
-        Assert.Null(deletedItem); //ověřuji, že se mi v předchozím řádku žádný item nenahrál
+        var deletedItem = await context.ToDoItems.FindAsync(toDoItem.ToDoItemId);
+        Assert.Null(deletedItem);
     }
 
     [Fact]
-    public void Delete_InvalidId_ReturnsNotFound()
+    public async Task Delete_InvalidId_ReturnsNotFound()
     {
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
@@ -49,9 +49,9 @@ public class DeleteTests
 
         // Act
         var invalidId = -1;
-        var result = controller.DeleteById(invalidId);
+        var result = await controller.DeleteById(invalidId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result); //kontroluje že výsledek metody DeleteById je not found (404)
+        Assert.IsType<NotFoundResult>(result);
     }
 }

@@ -3,13 +3,14 @@ namespace ToDoList.Test;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.WebApi;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
 public class PostTests
 {
     [Fact]
-    public void Post_ValidRequest_ReturnsNewItem()
+    public async Task Post_ValidRequest_ReturnsNewItem()
     {
         // Arrange
         //var controller = new ToDoItemsController();
@@ -25,11 +26,12 @@ public class PostTests
         );
 
         // Act
-        var result = controller.Create(request); //zase zůstává stejné
+        var result = await controller.Create(request); //zase zůstává stejné
         var resultResult = result.Result;
-        var value = result.GetValue();
 
         // Assert
+        var createdAtResult = Assert.IsType<CreatedAtActionResult>(resultResult);
+        var value = createdAtResult.Value as ToDoItemGetResponseDto;
         Assert.IsType<CreatedAtActionResult>(resultResult);
         Assert.NotNull(value);
 
@@ -38,11 +40,11 @@ public class PostTests
         Assert.Equal(request.Name, value.name);
 
         // Cleanup
-        var createdItem = context.ToDoItems.Find(value.toDoItemId); //musíme najít jaké ID mu databáze přiřadila
+        var createdItem = await context.ToDoItems.FindAsync(value.toDoItemId); //musíme najít jaké ID mu databáze přiřadila
         if (createdItem != null) //jenom pokud něco bylo vytvořeno
         {
             context.ToDoItems.Remove(createdItem);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

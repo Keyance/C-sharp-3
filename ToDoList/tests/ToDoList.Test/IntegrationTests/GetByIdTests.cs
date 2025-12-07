@@ -1,15 +1,17 @@
 namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi;
 
 public class GetByIdTests
 {
     [Fact]
-    public void GetById_ValidId_ReturnsItem()
+    public async Task GetById_ValidId_ReturnsItem()
     {
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
@@ -24,16 +26,16 @@ public class GetByIdTests
             Description = "Popis",
             IsCompleted = false
         };
-        context.ToDoItems.Add(toDoItem);
-        context.SaveChanges();
+        await context.ToDoItems.AddAsync(toDoItem);
+        await context.SaveChangesAsync();
 
         // Act
-        var result = controller.ReadByIdAsync(toDoItem.ToDoItemId); //zde to zůstává stejné, protože změna na práci s DB proběhla již v rámci metody v controlleru
+        var result = await controller.ReadByIdAsync(toDoItem.ToDoItemId); //zde to zůstává stejné, protože změna na práci s DB proběhla již v rámci metody v controlleru
         var resultResult = result.Result;
-        var value = result.GetValue();
 
         // Assert
-        Assert.IsType<OkObjectResult>(resultResult);
+        var okResult = Assert.IsType<OkObjectResult>(resultResult);
+        var value = okResult.Value as ToDoItemGetResponseDto;
         Assert.NotNull(value);
 
         Assert.Equal(toDoItem.ToDoItemId, value.toDoItemId);  //zůstává stejné
@@ -43,7 +45,7 @@ public class GetByIdTests
     }
 
     [Fact]
-    public void GetById_InvalidId_ReturnsNotFound()
+    public async Task GetById_InvalidId_ReturnsNotFound()
     {
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
@@ -57,7 +59,7 @@ public class GetByIdTests
 
         // Act
         var invalidId = -1;
-        var result = controller.ReadByIdAsync(invalidId);
+        var result = await controller.ReadByIdAsync(invalidId);
         var resultResult = result.Result;
 
         // Assert

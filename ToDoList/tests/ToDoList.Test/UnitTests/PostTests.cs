@@ -4,21 +4,17 @@ using NSubstitute;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.WebApi;
-using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 using ToDoList.Domain.Models;
-using ToDoList.Test;
 
 public class PostTests
 {
     [Fact]
-    public void Post_ValidRequest_ReturnsNewItem()
+    public async Task Post_CreateValidRequest_ReturnsCreatedAtAction()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-
-        var controller = new ToDoItemsController(repositoryMock); //toto je zatím prasárna, protože na context už pak nesaháme
-
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
+        var controller = new ToDoItemsController(repositoryMock);
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
             Description: "Popis",
@@ -26,43 +22,43 @@ public class PostTests
         );
 
         // Act
-        var result = controller.Create(request); //zase zůstává stejné
+        var result = await controller.Create(request);
         var resultResult = result.Result;
-        var value = result.GetValue();
 
         // Assert
-        Assert.IsType<CreatedAtActionResult>(resultResult);
+        var createdAtResult = Assert.IsType<CreatedAtActionResult>(resultResult);
+        var value = createdAtResult.Value as ToDoItemGetResponseDto;
         Assert.NotNull(value);
 
         Assert.Equal(request.Description, value.description);
         Assert.Equal(request.IsCompleted, value.isCompleted);
         Assert.Equal(request.Name, value.name);
+
+        await repositoryMock.Received(1).CreateAsync(Arg.Any<ToDoItem>());
     }
 
     [Fact]
-    public void Post_CreateUnhandledException_ReturnsInternalServerError()
+    public async Task Post_CreateUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-
-        var controller = new ToDoItemsController(repositoryMock); //toto je zatím prasárna, protože na context už pak nesaháme
-
+        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
+        repositoryMock.CreateAsync(Arg.Any<ToDoItem>()).Returns(x => Task.FromException(new Exception("Database error")));
+        var controller = new ToDoItemsController(repositoryMock);
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
             Description: "Popis",
             IsCompleted: false
         );
-        repositoryMock.When(x => x.Create(Arg.Any<ToDoItem>()))
-                      .Do(_ => throw new Exception());
+
         // Act
-        var result = controller.Create(request);
+        var result = await controller.Create(request);
         var resultResult = result.Result;
-        var value = result.GetValue();
 
         // Assert
-        var error = Assert.IsType<ObjectResult>(result);
-        Assert.Equal(500, error.StatusCode);
+        Assert.IsType<ObjectResult>(resultResult);
+        var objectResult = resultResult as ObjectResult;
+        Assert.Equal(500, objectResult?.StatusCode);
 
-        repositoryMock.Received(1).Create(Arg.Any<ToDoItem>());
+        await repositoryMock.Received(1).CreateAsync(Arg.Any<ToDoItem>());
     }
 }
