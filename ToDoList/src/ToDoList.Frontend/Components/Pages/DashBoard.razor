@@ -6,6 +6,7 @@
 
 <button @onclick="OrderById">Order by ID</button>
 <button @onclick="OrderByName">Order by Name</button>
+<button class="btn btn-success" @onclick="CreateItem">Create</button>
 
 <div>
     <h2>ToDo items dashboard</h2>
@@ -57,6 +58,12 @@
     public void DeleteItem(ToDoItemView toDoItem)
     {
         NavigationManager.NavigateTo($"deleteToDoItem/{toDoItem.Id}");
+    }
+
+    public void CreateItem()
+    {
+        NavigationManager.NavigateTo($"createToDoItem");
+
     }
 
     protected override async Task OnInitializedAsync()

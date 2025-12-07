@@ -9,4 +9,6 @@ public interface IToDoItemsClient
 
     public Task UpdateItemAsync(ToDoItemView item);
     public Task DeleteItemAsync(int itemId);
+
+    public Task CreateItemAsync (ToDoItemView item);
 }
