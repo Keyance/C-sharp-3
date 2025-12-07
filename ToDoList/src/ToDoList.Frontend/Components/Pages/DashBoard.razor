@@ -2,6 +2,7 @@
 @using ToDoList.Frontend.Clients
 
 @inject IToDoItemsClient toDoItemsClient
+@inject NavigationManager NavigationManager
 
 <button @onclick="OrderById">Order by ID</button>
 <button @onclick="OrderByName">Order by Name</button>
@@ -15,6 +16,7 @@
                 <th><button class="btn btn-primary" @onclick="OrderByName">Sort by Name</button></th>
                 <th>Description</th>
                 <th>IsCompleted</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +26,8 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>@item.Description</td>
-                    <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>¨
+                    <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
+                    <td><button class="btn btn-success" @onclick="() => EditItem(item)">Edit</button></td>
                 </tr>
             }
         </tbody>
@@ -32,37 +35,25 @@
 </div>
 
 @code {
-    private List<ToDoItemView> testData = new()
-{
-new ToDoItemView(1, "Nakoupit potraviny", "Mléko, chléb, vejce", false),
-new ToDoItemView(2, "Dokončit projekt", "Implementovat všechny funkce", true),
-new ToDoItemView(3, "Zavolat mamince", "Domluvit víkend", false),
-new ToDoItemView(4, "Cvičit", "Běhání v parku", false),
-new ToDoItemView(5, "Přečíst knihu", "Kapitola 5", true)
-};
 
-    private List<ToDoItemView> sortedData = new List<ToDoItemView>();
+     private List<ToDoItemView> sortedData = new();
 
-    protected override void OnInitialized()
+    public void OrderByName()
     {
-        sortedData = testData.ToList();
+        sortedData = sortedData.OrderBy(item => item.Name).ToList();
     }
 
-    private void OrderById()
+    public void OrderById()
     {
-        sortedData = sortedData
-        .OrderBy(x => x.Id)
-        .ToList();
+        sortedData = sortedData.OrderBy(item => item.Id).ToList();
     }
 
-    private void OrderByName()
+    public void EditItem(ToDoItemView toDoItem)
     {
-        sortedData = sortedData
-        .OrderBy(x => x.Name)
-        .ToList();
+        NavigationManager.NavigateTo($"editToDoItem/{toDoItem.Id}");
     }
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         //sortedData = testData.ToList();
         sortedData = await toDoItemsClient.ReadItemsAsync();
