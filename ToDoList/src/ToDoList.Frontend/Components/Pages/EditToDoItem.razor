@@ -12,30 +12,54 @@
 
 @if (ToDoItemModel is not null)
 {
-    <EditForm Model="ToDoItemModel" FormName="EditToDoItem" OnSubmit="Submit">
+    <EditForm Model="ToDoItemModel" FormName="EditToDoItem" OnValidSubmit="Submit"> @*OnValidSubmit*@
+        <DataAnnotationsValidator />
         <div class="mb-3">
-            <label for="Name" class="form-label">Name</label>
-            <InputText id="Name" @bind-Value="ToDoItemModel.Name" class="form-control" />
+            <label for="Name" class="form-label">Name:</label>
+            <InputText id="Name" class="form-control w-25" @bind-Value="ToDoItemModel.Name" />
+            <ValidationMessage For="() => ToDoItemModel.Name" />
         </div>
-        <InputText id="Description" @bind-Value="ToDoItemModel.Description" />
-        <InputCheckbox id="IsCompleted" @bind-Value="ToDoItemModel.IsCompleted" />
-        <button type="submit">Odeslat</button>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description:</label>
+            <InputText id="Description" class="form-control w-25" @bind-Value="ToDoItemModel.Description" />
+            <ValidationMessage For="() => ToDoItemModel.Name" />
+        </div>
+        <div class="mb-3">
+            <label for="IsCompleted" class="form-check-label">IsCompleted:</label>
+        </div>
+        <div class="mb-3">
+            <InputCheckbox id="IsCompleted" class="form-check" @bind-Value="ToDoItemModel.IsCompleted" />
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
     </EditForm>
 }
 
 @code {
 
     public ToDoItemView ToDoItemModel { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        ToDoItemModel = await toDoItemsClient.ReadItemByIdAsync(ItemId);
-    }
+
     [Parameter]
     public int ItemId { get; set; }
+    public delegate void ToDoItemViewProcessingDelegate(ToDoItemView toDoItemView);
+    private ToDoItemViewProcessingDelegate SubmitDelegate;
+    protected override async Task OnInitializedAsync()
+    {
+        SubmitDelegate += LogSubmit;
+
+        ToDoItemModel = await toDoItemsClient.ReadItemByIdAsync(ItemId);
+    }
+
+    private void LogSubmit(ToDoItemView item)
+    {
+        Console.WriteLine($"Potvrzujeme item = {item.Id} - {item.Name}");
+    }
 
     public async Task Submit()
     {
         await toDoItemsClient.UpdateItemAsync(ToDoItemModel);
+        SubmitDelegate?.Invoke(ToDoItemModel);
         NavigationManager.NavigateTo("/");
     }
 
