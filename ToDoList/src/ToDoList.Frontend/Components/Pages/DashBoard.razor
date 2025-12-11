@@ -6,6 +6,7 @@
 
 <button @onclick="OrderById">Order by ID</button>
 <button @onclick="OrderByName">Order by Name</button>
+<button class="btn btn-success" @onclick="CreateItem">Create</button>
 
 <div>
     <h2>ToDo items dashboard</h2>
@@ -27,7 +28,20 @@
                     <td>@item.Name</td>
                     <td>@item.Description</td>
                     <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
-                    <td><button class="btn btn-success" @onclick="() => EditItem(item)">Edit</button></td>
+                    <td>
+
+                        <div class="btn-group">
+                            <button class="btn btn-success" @onclick="() => ToggleItem(item)">
+                                <i class=@ConvertItemCompletionToToggleIconStyle(item.IsCompleted)></i>
+                            </button>
+                            <button class="btn btn-info" @onclick="() => EditItem(item)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-danger" @onclick="() => DeleteItem(item)">
+                                <i class="bi bi-x-square"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -52,10 +66,28 @@
     {
         NavigationManager.NavigateTo($"editToDoItem/{toDoItem.Id}");
     }
+    public void DeleteItem(ToDoItemView toDoItem)
+    {
+        NavigationManager.NavigateTo($"deleteToDoItem/{toDoItem.Id}");
+    }
+
+    public void CreateItem()
+    {
+        NavigationManager.NavigateTo($"createToDoItem");
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
         //sortedData = testData.ToList();
         sortedData = await toDoItemsClient.ReadItemsAsync();
     }
+    private async Task ToggleItem(ToDoItemView item)
+    {
+        item.IsCompleted = !item.IsCompleted;
+        await toDoItemsClient.UpdateItemAsync(item);
+    }
+
+    private string ConvertItemCompletionToTableRowStyle(bool isCompleted) => isCompleted ? "table-success" : "table-light";
+    private string ConvertItemCompletionToToggleIconStyle(bool isCompleted) => isCompleted ? "bi bi-check-square-fill" : "bi bi-check-square";
 }

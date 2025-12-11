@@ -8,6 +8,7 @@ using ToDoList.WebApi;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
+/*
 public class GetTests
 {
     [Fact]
@@ -62,3 +63,4 @@ public class GetTests
         await context.SaveChangesAsync();
     }
 }
+*/

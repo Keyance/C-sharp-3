@@ -1,0 +1,52 @@
+@page "/deleteToDoItem/{ItemId:int}"
+@using ToDoList.Domain.Models
+@using ToDoList.Frontend.Clients
+@using ToDoList.Frontend.Models
+
+@inject IToDoItemsClient toDoItemsClient
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
+
+<h3>Smazat položku @ItemId?</h3>
+
+
+@if (ToDoItemModel is not null)
+{
+    <p><b>@ToDoItemModel.Name</b></p>
+    <p>@ToDoItemModel.Description</p>
+
+    <button @onclick="Delete">Smazat</button>
+    <button @onclick="Cancel">Zrušit</button>
+}
+
+@code {
+
+    public ToDoItemView? ToDoItemModel { get; set; }
+
+    [Parameter]
+    public int ItemId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ToDoItemModel = await toDoItemsClient.ReadItemByIdAsync(ItemId);
+    }
+
+    public async Task Delete()//tady by to už mohlo být upravené
+    {
+        await toDoItemsClient.DeleteItemAsync(ItemId);
+        NavigationManager.NavigateTo("/");
+    }
+
+    public async Task GetByID(int ToDoID)
+    {
+        ToDoItemModel = await toDoItemsClient.ReadItemByIdAsync(ToDoID);
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+
+}
