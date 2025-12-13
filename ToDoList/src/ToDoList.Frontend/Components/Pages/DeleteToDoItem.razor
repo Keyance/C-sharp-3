@@ -13,8 +13,14 @@
 
 @if (ToDoItemModel is not null)
 {
-    <p><b>@ToDoItemModel.Name</b></p>
-    <p>@ToDoItemModel.Description</p>
+    <div>
+        <label for="Name" class="form-label">Name:</label>
+        <p><b>@ToDoItemModel.Name</b></p>
+        <label for="Description" class="form-label">Description:</label>
+        <p><b>@ToDoItemModel.Description</b></p>
+        <label for="Kategory" class="form-label">Kategory:</label>
+        <p><b>@ToDoItemModel.Kategory</b></p>
+    </div>
 
     <button @onclick="Delete">Smazat</button>
     <button @onclick="Cancel">Zrušit</button>
