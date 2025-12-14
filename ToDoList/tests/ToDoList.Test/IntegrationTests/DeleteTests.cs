@@ -7,7 +7,6 @@ using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi;
 
-/*
 public class DeleteTests
 {
     [Fact]
@@ -23,7 +22,8 @@ public class DeleteTests
         {
             Name = "Jmeno",
             Description = "Popis",
-            IsCompleted = false
+            IsCompleted = false,
+            Kategory = "kategorie"
         };
         await context.ToDoItems.AddAsync(toDoItem);
         await context.SaveChangesAsync();
@@ -55,4 +55,4 @@ public class DeleteTests
         // Assert
         Assert.IsType<NotFoundResult>(result);
     }
-}*/
+}

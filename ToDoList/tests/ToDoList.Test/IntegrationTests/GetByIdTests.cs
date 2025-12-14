@@ -8,7 +8,6 @@ using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi;
 
-/*
 public class GetByIdTests
 {
     [Fact]
@@ -68,4 +67,3 @@ public class GetByIdTests
         //zbytek zůstává stejný
     }
 }
-*/
