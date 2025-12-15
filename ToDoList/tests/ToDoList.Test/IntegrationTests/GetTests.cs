@@ -16,6 +16,10 @@ public class GetTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
+
+        await context.Database.EnsureDeletedAsync();
+        await context.Database.EnsureCreatedAsync();
+
         var repository = new ToDoItemsRepository(context);
         var controller = new ToDoItemsController(repository);
 
