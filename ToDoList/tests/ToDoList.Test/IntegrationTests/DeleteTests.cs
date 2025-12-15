@@ -49,7 +49,7 @@ public class DeleteTests
         var controller = new ToDoItemsController(repository);
 
         // Act
-        var invalidId = -1;
+        var invalidId = 958;
         var result = await controller.DeleteById(invalidId);
 
         // Assert

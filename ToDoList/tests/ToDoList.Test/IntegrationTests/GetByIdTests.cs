@@ -58,7 +58,7 @@ public class GetByIdTests
         //POZN - teď už nevkládáme do databáze objekt, ale jen zkoušíme neexistující ID
 
         // Act
-        var invalidId = -1;
+        var invalidId = 99999999;
         var result = await controller.ReadByIdAsync(invalidId);
         var resultResult = result.Result;
 
