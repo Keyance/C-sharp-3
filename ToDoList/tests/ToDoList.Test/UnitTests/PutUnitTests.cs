@@ -21,14 +21,16 @@ public class PutTests
             ToDoItemId = 1,
             Name = "Jmeno",
             Description = "Popis",
-            IsCompleted = false
+            IsCompleted = false,
+            Kategory = "kategorie"
         };
         repositoryMock.ReadByIdAsync(1).Returns(Task.FromResult<ToDoItem?>(existingItem));
 
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
             Description: "Jiny popis",
-            IsCompleted: true
+            IsCompleted: true,
+            Kategory: null
         );
 
         // Act
@@ -57,7 +59,8 @@ public class PutTests
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
             Description: "Jiny popis",
-            IsCompleted: true
+            IsCompleted: true,
+            Kategory: "kategorie"
         );
 
         // Act
@@ -81,7 +84,8 @@ public class PutTests
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
             Description: "Jiny popis",
-            IsCompleted: true
+            IsCompleted: true,
+            Kategory: "kategorie"
         );
 
         // Act

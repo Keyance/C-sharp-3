@@ -24,6 +24,11 @@
             <InputText id="Description" class="form-control w-25" @bind-Value="ToDoItemModel.Description" />
             <ValidationMessage For="() => ToDoItemModel.Name" />
         </div>
+                <div class="mb-3">
+            <label for="Kategory" class="form-label">Kategory:</label>
+            <InputText id="Kategory" class="form-control w-25" @bind-Value="ToDoItemModel.Kategory" />
+            <ValidationMessage For="() => ToDoItemModel.Name" />
+        </div>
         <div class="mb-3">
             <label for="IsCompleted" class="form-check-label">IsCompleted:</label>
         </div>

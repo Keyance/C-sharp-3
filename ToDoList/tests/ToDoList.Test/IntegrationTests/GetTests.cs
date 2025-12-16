@@ -8,7 +8,6 @@ using ToDoList.WebApi;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
-/*
 public class GetTests
 {
     [Fact]
@@ -17,6 +16,10 @@ public class GetTests
         // Arrange
         var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
         using var context = new ToDoItemsContext(connectionString);
+
+        await context.Database.EnsureDeletedAsync();
+        await context.Database.EnsureCreatedAsync();
+
         var repository = new ToDoItemsRepository(context);
         var controller = new ToDoItemsController(repository);
 
@@ -25,14 +28,16 @@ public class GetTests
             ToDoItemId = 1,
             Name = "Jmeno1",
             Description = "Popis1",
-            IsCompleted = false
+            IsCompleted = false,
+            Kategory = null
         };
         var todoItem2 = new ToDoItem
         {
             ToDoItemId = 2,
             Name = "Jmeno2",
             Description = "Popis2",
-            IsCompleted = true
+            IsCompleted = true,
+            Kategory = null
         };
         //var controller = new ToDoItemsController(); - již máme nahoře
         //controller.AddItemToStorage(todoItem1); - stále by fungovalo minimálně zavolání metody, dokud ji nesmažu, až nebude mít reference
@@ -47,7 +52,7 @@ public class GetTests
         var resultResult = result.Result;
 
         // Assert
-         var okResult = Assert.IsType<OkObjectResult>(resultResult);
+        var okResult = Assert.IsType<OkObjectResult>(resultResult);
         var value = okResult.Value as IEnumerable<ToDoItemGetResponseDto>;
         Assert.NotNull(value);
 
@@ -63,4 +68,3 @@ public class GetTests
         await context.SaveChangesAsync();
     }
 }
-*/

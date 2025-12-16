@@ -16,6 +16,7 @@
                 <th><button class="btn btn-secondary" @onclick="OrderById">Sort by Id</button></th>
                 <th><button class="btn btn-primary" @onclick="OrderByName">Sort by Name</button></th>
                 <th>Description</th>
+                <th><button class="btn btn-secondary" @onclick="OrderByKategory">Sort by Kategory</button></th>
                 <th>IsCompleted</th>
                 <th>Actions</th>
             </tr>
@@ -27,6 +28,7 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>@item.Description</td>
+                    <td>@item.Kategory</td>
                     <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
                     <td>
 
@@ -60,6 +62,11 @@
     public void OrderById()
     {
         sortedData = sortedData.OrderBy(item => item.Id).ToList();
+    }
+
+    public void OrderByKategory()
+    {
+        sortedData = sortedData.OrderBy(item => item.Kategory).ToList();
     }
 
     public void EditItem(ToDoItemView toDoItem)

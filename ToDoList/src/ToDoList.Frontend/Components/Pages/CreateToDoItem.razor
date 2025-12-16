@@ -9,12 +9,32 @@
 @rendermode InteractiveServer
 
 <EditForm Model="ToDoItemModel" FormName="CreateToDoItem" OnSubmit="Create">
+    <DataAnnotationsValidator />
+
     <div class="mb-3">
         <label for="Name" class="form-label">Name</label>
-        <InputText id="Name" @bind-Value="ToDoItemModel.Name" class="form-control" />
+        <InputText id="Name" class="form-control w-25" @bind-Value="ToDoItemModel.Name" />
+        <ValidationMessage For="() => ToDoItemModel.Name" />
     </div>
-    <InputText id="Description" @bind-Value="ToDoItemModel.Description" />
-    <InputCheckbox id="IsCompleted" @bind-Value="ToDoItemModel.IsCompleted" />
+    <div class="mb-3">
+        <label for="Description" class="form-label">Description</label>
+        <InputText id="Description" class="form-control w-25" @bind-Value="ToDoItemModel.Description" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Kategory" class="form-label">Kategory</label>
+        <InputText id="Kategory" class="form-control w-25" @bind-Value="ToDoItemModel.Kategory" />
+    </div>
+    
+    <div class="mb-3">
+        <label for="IsCompleted" class="form-check-label">IsCompleted:</label>
+    </div>
+
+    <div class="mb-3">
+        <InputCheckbox id="IsCompleted" @bind-Value="ToDoItemModel.IsCompleted" />
+    </div>
+
+
     <button type="submit">Odeslat</button>
 </EditForm>
 

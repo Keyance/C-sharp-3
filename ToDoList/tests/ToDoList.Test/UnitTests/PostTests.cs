@@ -18,7 +18,8 @@ public class PostTests
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
             Description: "Popis",
-            IsCompleted: false
+            IsCompleted: false,
+            Kategory: "kategorie"
         );
 
         // Act
@@ -47,7 +48,8 @@ public class PostTests
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
             Description: "Popis",
-            IsCompleted: false
+            IsCompleted: false,
+            Kategory: "kategorie"
         );
 
         // Act

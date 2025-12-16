@@ -44,7 +44,7 @@ public class DeleteTests
         repositoryMock.ReadByIdAsync(1).Returns(Task.FromResult<ToDoItem?>(null));
 
         // Act
-        var result = controller.DeleteById(1);
+        var result = await controller.DeleteById(1);
 
         // Assert
         Assert.IsType<NotFoundResult>(result); //kontroluje že výsledek metody DeleteById je not found (404)
@@ -54,25 +54,6 @@ public class DeleteTests
     }
 
     //BRAK-OUT ROOM testy
-    [Fact]
-    public async Task Delete_ValidItemId_ReturnsNoContent()
-    {
-        // Arrange
-        var repositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
-        repositoryMock.ReadByIdAsync(Arg.Any<int>()).Returns(x => Task.FromException<ToDoItem?>(new Exception("Database error")));
-        var controller = new ToDoItemsController(repositoryMock);
-
-
-        //Act
-        var result = await controller.DeleteById(1);
-
-        //Assert
-        Assert.IsType<NotFoundResult>(result);
-
-        await repositoryMock.Received(1).ReadByIdAsync(1);
-        await repositoryMock.Received(1).DeleteByIdAsync(1);
-    }
-
     [Fact]
     public async Task Delete_AnyItemIdExceptionOccurredDuringReadById_ReturnsInternalServerError()
     {
@@ -101,7 +82,7 @@ public class DeleteTests
         var controller = new ToDoItemsController(repositoryMock);
 
         // Act
-        var result = controller.DeleteById(1);
+        var result = await controller.DeleteById(1);
 
         // Assert
         var error = Assert.IsType<ObjectResult>(result);

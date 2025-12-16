@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
-/*
 public class PostTests
 {
     [Fact]
@@ -23,7 +22,8 @@ public class PostTests
         var request = new ToDoItemCreateRequestDto(
             Name: "Jmeno",
             Description: "Popis",
-            IsCompleted: false
+            IsCompleted: false,
+            Kategory: "Kategorie"
         );
 
         // Act
@@ -49,4 +49,3 @@ public class PostTests
         }
     }
 }
-*/

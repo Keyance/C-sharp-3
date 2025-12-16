@@ -8,7 +8,6 @@ using ToDoList.WebApi;
 using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
-/*
 public class PutTests
 {
     [Fact]
@@ -25,7 +24,8 @@ public class PutTests
             ToDoItemId = 1,
             Name = "Jmeno",
             Description = "Popis",
-            IsCompleted = false
+            IsCompleted = false,
+            Kategory = "nějaká"
         };
 
         await context.ToDoItems.AddAsync(toDoItem);
@@ -34,7 +34,8 @@ public class PutTests
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
             Description: "Jiny popis",
-            IsCompleted: true
+            IsCompleted: true,
+            Kategory: null
         );
 
         // Act
@@ -62,7 +63,8 @@ public class PutTests
             ToDoItemId = 1,
             Name = "Jmeno",
             Description = "Popis",
-            IsCompleted = false
+            IsCompleted = false,
+            Kategory = "Nějaká"
         };
         await context.ToDoItems.AddAsync(toDoItem);
         await context.SaveChangesAsync();
@@ -70,7 +72,8 @@ public class PutTests
         var request = new ToDoItemUpdateRequestDto(
             Name: "Jine jmeno",
             Description: "Jiny popis",
-            IsCompleted: true
+            IsCompleted: true,
+            Kategory: null
         );
 
         // Act
@@ -85,4 +88,3 @@ public class PutTests
         await context.SaveChangesAsync();
     }
 }
-*/
